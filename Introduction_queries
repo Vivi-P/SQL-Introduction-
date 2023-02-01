@@ -1,0 +1,354 @@
+1. List the name and salary of employees who do not work in division
+
+
+Query: 
+
+
+SELECT name, salary
+FROM employee 
+WHERE did != 5;
+
+
+Output:
+
+
+NAME	SALARY	DID
+kevin	32000	2
+joan	42000	1
+brian	37000	3
+harry	92000	4
+peter	45000	2
+peter	68000	3
+smith	39000	4
+chen	71000	1
+smith	46000	1
+joan	48000	1
+kim	49000	2
+austin	46000	1
+Justin	62000	2
+Nacy	52000	1
+Kristie	52000	1
+John	52000	3
+Alex	69000	1
+Phil	72000	2
+Steve	74000	4
+Jenna	69000	1
+Alan	62000	2
+Julia	69000	4
+Sandra	72000	4
+Joe	74000	4
+grace	62000	4
+
+
+
+2. List the name of project whose budget is between 4000-6000 
+
+
+Query:
+
+
+SELECT Pname, budget
+FROM project 
+WHERE budget between 4000 and 6000; 
+
+
+Output:
+
+
+PNAME        BUDGET
+network development        6000
+Web development        5000
+Wireless development        5000
+security system        6000
+
+
+3. List the total number of employees whose name has ‘a’ as the second letter from the left.  (hint, using LIKE operator and wildcard character)
+
+
+Query: 
+
+
+SELECT empID, name
+FROM employee 
+WHERE name LIKE '_a%';
+
+
+Result:
+
+
+EMPID        NAME
+4        larry
+5        harry
+15        sam
+17        Nacy
+18        Marilyn
+27        Sandra
+29        karl
+
+
+4. List the total number of employees whose name’s second letter is ‘a’ for each division, including division ID
+
+
+Query: 
+
+
+SELECT did, count(*) as No_employees
+FROM employee
+WHERE name like '_a%'
+GROUP BY did;
+
+
+Output:
+
+
+DID        NO_EMPLOYEES
+1        1
+5        4
+4        2
+
+
+5. List the total project budget for each division, including division ID.
+
+
+Query: 
+
+
+SELECT did,sum(budget)
+FROM project
+GROUP BY did;
+
+
+Output:
+
+
+DID        SUM(BUDGET)
+1        12000
+2        14000
+4        6000
+3        5000
+
+
+6. List the ID of the division that has two or more projects with a budget over $5000.
+
+
+Query:
+SELECT did, sum(budget), count(*) as No_Projects
+FROM project
+WHERE budget > 5000
+GROUP BY did
+HAVING count(*) >= 2;
+
+
+Output
+
+
+DID        SUM(BUDGET)        NO_PROJECTS
+2        14000        2
+
+
+7. List the ID of the division that sponsors the project "Web development", List the project budget too.
+
+
+Query: 
+
+
+SELECT did, budget, Pname
+FROM project
+WHERE Pname = 'Web development'
+
+
+Output:
+
+
+DID        BUDGET        PNAME
+3        5000        Web development
+
+
+8. List the name of a project that has the word ‘system’ in it.
+
+
+Query:
+
+
+SELECT Pname
+FROM project 
+WHERE Pname LIKE '%system%';
+
+
+Output:
+
+
+PNAME
+security system
+system development
+
+
+9. List the total number of project and total budget for each division, show division ID
+
+
+Query:
+
+
+SELECT did, count(*) pname, sum(budget)
+FROM project 
+GROUP BY did;
+
+
+Output:
+
+
+DID        PNAME        SUM(BUDGET)
+1        2        12000
+2        2        14000
+4        1        6000
+3        1        5000
+
+
+10. List the ID of employee that worked on more than three projects.
+
+
+Query: 
+
+
+SELECT empID, count(pid) as Noprojects
+FROM workon
+GROUP BY empID
+HAVING count(pid) > 3 ;
+
+
+Output:
+
+
+EMPID        NOPROJECTS
+6        4
+8        4
+9        6
+26        4
+3        4
+
+
+11. List the ID of each division with its total salary.
+
+
+Query: 
+
+
+SELECT did, sum(salary)
+FROM employee
+GROUP BY did;
+
+
+Output:
+
+
+DID        SUM(SALARY)
+1        495000
+2        322000
+5        301000
+4        482000
+3        157000
+
+
+12. List the total number of projects each employee works on, including employee's ID and total hours an employee spent on the project.
+
+
+Query:
+SELECT empid, count(pid) as Noprojects , sum(hours)
+FROM workon
+GROUP BY empid;
+
+
+Output:
+EMPID        NOPROJECTS        SUM(HOURS)
+6        4        165
+14        1        20
+23        1        30
+27        2        70
+1        1        30
+7        3        90
+15        1        40
+8        4        120
+12        1        30
+17        1        30
+21        2        60
+30        3        100
+4        3        105
+5        1        30
+18        1        30
+3        4        300
+9        6        180
+22        2        70
+26        4        110
+28        2        60
+13        1        30
+19        2        60
+29        1        30
+25        2        70
+16        2        60
+24        1        20
+
+
+13. List the total number of employees who work on project 1.
+
+
+Query:
+
+
+
+
+SELECT pid, count(empid) as TotalNoemployees
+FROM workon
+GROUP BY pid 
+HAVING pid = '1';
+
+
+Output:
+
+
+PID        TOTALNOEMPLOYEES
+1        8
+
+
+14. List names that are shared by more than one employee and list the number of employees who share that name.
+
+
+Query:
+
+
+SELECT name, COUNT(*) as noemployeessharingnames
+FROM employee
+GROUP BY name
+HAVING COUNT(*) > 1;
+
+
+Output:
+
+
+NAME        NOEMPLOYEESSHARINGNAMES
+kim        2
+joan        2
+peter        2
+smith        2
+
+
+15. Bonus question: List the total number of employee and total salary for each division, including division name (hint: use JOIN operation, read the text for join operation)
+
+
+Query:
+
+
+SELECT count(*) Noemployee, sum(salary), dname
+FROM employee e join division d
+ON e.did = d.did
+GROUP BY dname;
+
+
+Output:
+
+
+NOEMPLOYEE        SUM(SALARY)        DNAME
+3        157000        human resource
+5        301000        accounting
+7        482000        Research and development
+6        322000        marketing
+9        495000        engineering
